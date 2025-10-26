@@ -1,11 +1,11 @@
 {
   "name": "ai-career-coach",
   "version": "0.1.0",
-    "type": "module",
+  "type": "module",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-"build": "next build --no-lint",
+    "build": "next build --no-lint",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"

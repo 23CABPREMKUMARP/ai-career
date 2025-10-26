@@ -1,36 +1,39 @@
 // middleware.js
-export const runtime = "nodejs";
-
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/edge";
 import { NextResponse } from "next/server";
 
-// Define protected routes
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/resume(.*)",
-  "/interview(.*)",
-  "/ai-cover-letter(.*)",
-  "/onboarding(.*)",
-]);
+// Protected routes
+const protectedRoutes = [
+  "/dashboard",
+  "/resume",
+  "/interview",
+  "/ai-cover-letter",
+  "/onboarding",
+];
 
-export default clerkMiddleware(async (auth, req) => {
-  const authData = await auth();
-  const { userId, redirectToSignIn } = authData;
+export async function middleware(req) {
+  const { userId } = auth(req);
+  const url = req.nextUrl.clone();
 
-  // Redirect to sign-in if user is not authenticated and route is protected
-  if (!userId && isProtectedRoute(req)) {
-    return redirectToSignIn();
+  // Check if current route is protected
+  const isProtected = protectedRoutes.some((path) =>
+    url.pathname.startsWith(path)
+  );
+
+  // Redirect to sign-in if user is not authenticated
+  if (isProtected && !userId) {
+    url.pathname = "/sign-in"; // your Clerk sign-in route
+    return NextResponse.redirect(url);
   }
 
   // Allow request to continue
   return NextResponse.next();
-});
+}
 
+// Run middleware only on protected routes & API
 export const config = {
   matcher: [
-    // Skip Next.js internals and static files
-    "/((?!_next|static|favicon.ico).*)",
-    // Always run for API routes
+    "/((?!_next/static|_next/image|favicon.ico).*)",
     "/(api|trpc)(.*)",
   ],
 };
