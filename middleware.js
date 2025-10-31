@@ -2,7 +2,10 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// Define protected routes using regex-style matchers
+// Force Node.js runtime instead of Edge
+export const runtime = "nodejs";
+
+// Define protected routes
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/resume(.*)",
@@ -14,17 +17,14 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware((auth, req) => {
   const { userId } = auth();
 
-  // If user not signed in and accessing protected route → redirect
   if (!userId && isProtectedRoute(req)) {
-    const signInUrl = new URL("/sign-in", req.url); // ✅ builds full absolute URL
+    const signInUrl = new URL("/sign-in", req.url);
     return NextResponse.redirect(signInUrl);
   }
 
-  // Otherwise allow request
   return NextResponse.next();
 });
 
-// Run Clerk middleware for all pages except static assets and APIs
 export const config = {
   matcher: ["/((?!_next|.*\\..*|api).*)"],
 };
