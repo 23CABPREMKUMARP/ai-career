@@ -1,39 +1,30 @@
 // middleware.js
-import { auth } from "@clerk/nextjs/edge";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// Protected routes
-const protectedRoutes = [
-  "/dashboard",
-  "/resume",
-  "/interview",
-  "/ai-cover-letter",
-  "/onboarding",
-];
+// Define protected routes using regex-style matchers
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/resume(.*)",
+  "/interview(.*)",
+  "/ai-cover-letter(.*)",
+  "/onboarding(.*)",
+]);
 
-export async function middleware(req) {
-  const { userId } = auth(req);
-  const url = req.nextUrl.clone();
+export default clerkMiddleware((auth, req) => {
+  const { userId } = auth();
 
-  // Check if current route is protected
-  const isProtected = protectedRoutes.some((path) =>
-    url.pathname.startsWith(path)
-  );
-
-  // Redirect to sign-in if user is not authenticated
-  if (isProtected && !userId) {
-    url.pathname = "/sign-in"; // your Clerk sign-in route
-    return NextResponse.redirect(url);
+  // If user not signed in and accessing protected route → redirect
+  if (!userId && isProtectedRoute(req)) {
+    const signInUrl = new URL("/sign-in", req.url); // ✅ builds full absolute URL
+    return NextResponse.redirect(signInUrl);
   }
 
-  // Allow request to continue
+  // Otherwise allow request
   return NextResponse.next();
-}
+});
 
-// Run middleware only on protected routes & API
+// Run Clerk middleware for all pages except static assets and APIs
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-    "/(api|trpc)(.*)",
-  ],
+  matcher: ["/((?!_next|.*\\..*|api).*)"],
 };
