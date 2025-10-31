@@ -1,12 +1,5 @@
-// middleware.ts
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-
-// ✅ Move runtime inside `config`, not as a top-level export
-export const config = {
-  matcher: ["/((?!_next|.*\\..*|api).*)"],
-  runtime: "nodejs", // Forces Node.js runtime instead of Edge
-};
 
 // Define protected routes
 const isProtectedRoute = createRouteMatcher([
@@ -27,3 +20,10 @@ export default clerkMiddleware((auth, req) => {
 
   return NextResponse.next();
 });
+
+export const config = {
+  matcher: [
+    "/((?!_next|.*\\..*|api|sign-in|sign-up).*)",
+  ],
+  runtime: "nodejs", // ✅ Must be INSIDE config
+};
