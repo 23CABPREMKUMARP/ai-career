@@ -1,18 +1,17 @@
 {
-  "version": 3,
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "functions": {
-    "app/api/inngest/proxy.js": {
-      "runtime": "vercel-nodejs@4.0.0",
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "app/api/inngest/proxy.js",
+      "use": "@vercel/node",
       "maxDuration": 10
     }
-  },
+  ],
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/$1"
-    }
+    { "source": "/(.*)", "destination": "/$1" }
   ]
 }
