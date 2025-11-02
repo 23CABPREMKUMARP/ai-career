@@ -20,9 +20,9 @@ export default clerkMiddleware((auth, req) => {
 });
 
 export const config = {
+  runtime: "nodejs", // ✅ Node runtime for Vercel
   matcher: [
     "/((?!_next|.*\\..*).*)",
     "/(api|trpc)(.*)",
   ],
-  runtime: "experimental-edge", // ✅ change here
 };
