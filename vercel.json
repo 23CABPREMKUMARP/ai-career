@@ -2,10 +2,6 @@
   "installCommand": "npm install",
 
   "functions": {
-    "api/**/*.js": {
-      "runtime": "vercel-nodejs@4.0.0",
-      "maxDuration": 10
-    },
     "proxy.js": {
       "runtime": "vercel-nodejs@4.0.0",
       "maxDuration": 10
