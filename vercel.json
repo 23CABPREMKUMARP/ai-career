@@ -7,8 +7,7 @@
     },
     {
       "src": "app/api/inngest/proxy.js",
-      "use": "@vercel/node",
-      "maxDuration": 10
+      "use": "@vercel/node"
     }
   ],
   "rewrites": [
