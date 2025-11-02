@@ -1,4 +1,3 @@
-// proxy.ts
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -22,7 +21,8 @@ export default clerkMiddleware((auth, req) => {
 
 export const config = {
   matcher: [
-    "/((?!_next|.*\\..*).*)", // exclude _next and static assets
-    "/(api|trpc)(.*)"
-  ]
+    "/((?!_next|.*\\..*).*)",
+    "/(api|trpc)(.*)",
+  ],
+  runtime: "experimental-edge", // ✅ change here
 };
