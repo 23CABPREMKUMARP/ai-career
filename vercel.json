@@ -1,7 +1,7 @@
 {
   "installCommand": "npm install",
   "functions": {
-    "proxy.js": {
+    "app/api/inngest/proxy.js": {
       "runtime": "vercel-nodejs@4.0.0",
       "maxDuration": 10
     }
