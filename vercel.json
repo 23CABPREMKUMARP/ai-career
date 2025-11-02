@@ -1,16 +1,9 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    },
-    {
-      "src": "app/api/inngest/proxy.js",
-      "use": "@vercel/node"
-    }
+    { "src": "package.json", "use": "@vercel/next" }
   ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/$1" }
+  "routes": [
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
